@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Algarash Trading Co. WLL</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-accent: #ff8800;
+            /* global transitions tuned to 0.5s for smooth feel */
+            --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-animation-time: 60s;
+        }
+
+        html[data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --bg-primary: rgba(0, 0, 0, 0.75);
+            --bg-card: linear-gradient(145deg, #2b2b2b, #1c1c1c);
+            --text-primary: white;
+            --text-secondary: #ccc;
+            --text-label: #aaa;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            --card-hover-glow: 0 0 20px #ff8800;
+            --logo-bg: white;
+            --logo-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #f5f5f5, #efefef, #e8e8e8);
+            --bg-primary: rgba(255, 255, 255, 0.95);
+            --bg-card: linear-gradient(145deg, #f8f8f8, #ececec);
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --text-label: #666;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --card-hover-glow: 0 0 20px rgba(255, 136, 0, 0.4);
+            --logo-bg: #fcfcfc;
+            --logo-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: all var(--transition-smooth);
+        }
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* prevent any horizontal scroll/zoom issues */
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-size: 200% 200%;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background var(--transition-smooth),
+                color var(--transition-smooth);
+            animation: bgMove var(--bg-animation-time) ease-in-out infinite alternate;
+        }
+
+        .theme-toggle-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-primary);
+            padding: 10px 16px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-smooth);
+            animation: pulseSlow 5s infinite;
+        }
+
+        html[data-theme="light"] .theme-toggle {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .toggle-icon {
+            font-size: 16px;
+            color: var(--primary-accent);
+            transition: transform var(--transition-smooth), color var(--transition-smooth);
+        }
+
+        .theme-toggle:hover .toggle-icon {
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background var(--transition-smooth);
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            outline: none;
+        }
+
+        html[data-theme="dark"] .toggle-switch {
+            background: var(--primary-accent);
+        }
+
+        html[data-theme="light"] .toggle-switch {
+            background: #ddd;
+        }
+
+        .toggle-circle {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform var(--transition-smooth);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        html[data-theme="dark"] .toggle-circle {
+            transform: translateX(24px);
+        }
+
+        html[data-theme="light"] .toggle-circle {
+            transform: translateX(0);
+        }
+
+        .toggle-switch:hover {
+            box-shadow: 0 0 15px rgba(255, 136, 0, 0.3);
+        }
+
+        .toggle-switch:active .toggle-circle {
+            transform: scale(0.9);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            background: var(--bg-primary);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: var(--card-shadow), 0 4px 12px rgba(0, 0, 0, 0.06);
+            animation: fadeIn 0.8s ease-in-out;
+            transition: background var(--transition-smooth),
+                box-shadow var(--transition-smooth);
+            margin-top: 20px;
+        }
+
+        /* LOGO */
+        .logo-box {
+            background: var(--logo-bg);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: var(--logo-shadow);
+            transition: all var(--transition-smooth);
+        }
+        /* ensure container can host absolute decorations */
+        .container {
+            position: relative; /* new: enable absolute children */
+            z-index: 1; /* above background effects */
+        }
+
+        .logo-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 50px rgba(255, 136, 0, 0.15);
+        }
+
+        .logo-box img {
+            max-width: 300px;
+            width: 100%;
+            transition: transform var(--transition-smooth);
+        }
+
+        .logo-box:hover img {
+            transform: scale(1.02);
+        }
+
+        /* TITLE */
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--primary-accent);
+            font-size: 28px;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: color var(--transition-smooth);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            transition: color var(--transition-smooth);
+        }
+
+        /* CARDS */
+        .card {
+            position: relative;
+            background: var(--bg-card);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-radius: 18px;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--card-shadow), 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #ff8800, #ffd700, #ff8800) 1;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--card-hover-glow), 0 15px 40px rgba(0, 0, 0, 0.2);
+            animation: gradientGlow 4s infinite;
+        }
+
+        html[data-theme="light"] .card:hover {
+            box-shadow: var(--card-hover-glow), 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-label);
+            margin-bottom: 10px;
+        }
+
+        .icon-label i {
+            font-size: 16px;
+            color: var(--primary-accent);
+            transition: all var(--transition-smooth);
+        }
+
+        .card:hover .icon-label i {
+            transform: scale(1.2) rotate(12deg);
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--text-label);
+            transition: color var(--transition-smooth);
+        }
+
+        .value {
+            font-size: 17px;
+            margin: 8px 0;
+            word-break: break-word;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            transition: color var(--transition-smooth);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .copy-btn,
+        .open-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            will-change: transform, box-shadow;
+        }
+
+        .copy-btn::before,
+        .open-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .copy-btn:active::before,
+        .open-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .copy-btn {
+            background: var(--primary-accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 136, 0, 0.3);
+        }
+
+        .copy-btn:hover {
+            background: white;
+            color: var(--primary-accent);
+            box-shadow: 0 8px 25px rgba(255, 136, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
+        }
+
+        .open-btn {
+            background: white;
+            color: var(--primary-accent);
+            box-shadow: 0 4px 15px rgba(255, 136, 0, 0.2);
+        }
+
+        html[data-theme="light"] .open-btn {
+            background: #f0f0f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .open-btn:hover {
+            background: var(--primary-accent);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 136, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .open-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
+        }
+
+        .open-btn a {
+            text-decoration: none;
+        }
+
+        /* PERSONAL INSTA LINK */
+        .insta-link {
+            color: #E1306C;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition-smooth);
+            position: relative;
+        }
+
+        .insta-link {
+            position: relative;
+            text-decoration: none;
+        }
+
+        .insta-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width var(--transition-smooth);
+        }
+
+        .insta-link:hover::after {
+            width: 100%;
+        }
+
+        .insta-link:hover {
+            text-shadow: 0 0 12px #E1306C;
+            transform: scale(1.05);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            color: var(--text-label);
+            transition: color var(--transition-smooth);
+        }
+
+        /* generic underline animation for links */
+        a:not(.open-btn) {
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a:not(.open-btn)::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--primary-accent);
+            transition: width var(--transition-smooth);
+        }
+
+        a:not(.open-btn):hover::after {
+            width: 100%;
+        }
+
+        .personal {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        /* TOAST (copy confirmation tooltip) */
+        .toast {
+            position: absolute; /* positioned via JS near button */
+            background: var(--primary-accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(5px);
+            z-index: 2000; /* appear above all content */
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 136, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 136, 0, 0.5);
+            }
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            100% {
+                background-position: 10% 10%;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                border-image-source: linear-gradient(45deg, #ff8800, #ffd700, #ff8800);
+            }
+
+            50% {
+                border-image-source: linear-gradient(45deg, #ffd700, #ff8800, #ffd700);
+            }
+
+            100% {
+                border-image-source: linear-gradient(45deg, #ff8800, #ffd700, #ff8800);
+            }
+        }
+
+        @keyframes pulseSlow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(255, 136, 0, 0);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 18px rgba(255, 136, 0, 0.25);
+            }
+        }
+
+        /* ---------- PREMIUM BACKGROUND DECORATIONS ---------- */
+        /* colors used for shapes adapt to theme */
+        :root {
+            /* light theme uses a very faint orange blob, dark theme uses richer accent */
+            --shape-color-light: rgba(255, 136, 0, 0.08);
+            --shape-color-dark: rgba(255, 136, 0, 0.2);
+        }
+        html[data-theme="dark"] {
+            --shape-color: var(--shape-color-dark);
+        }
+        html[data-theme="light"] {
+            --shape-color: var(--shape-color-light);
+        }
+
+        .decor-container {
+            position: fixed; /* fixed to viewport for wide right-side coverage */
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 50vw; /* cover about half the screen on the right */
+            max-width: 800px;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+            transform: translate3d(0,0,0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .decor-container .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+            will-change: transform, opacity;
+            animation: float 30s ease-in-out infinite alternate;
+        }
+
+        .decor-container .blob1 {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle at 40% 40%, var(--shape-color), transparent 70%);
+            top: 15%;
+            right: 10%;
+            animation-duration: 45s;
+        }
+
+        .decor-container .blob2 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle at 60% 60%, var(--shape-color), transparent 70%);
+            top: 55%;
+            right: 5%;
+            animation-duration: 65s;
+        }
+
+        .decor-container .glass1 {
+            width: 160px;
+            height: 160px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            top: 40%;
+            right: 22%;
+            transform: rotate(45deg);
+            animation-duration: 50s;
+        }
+
+        .decor-container .glass2 {
+            width: 200px;
+            height: 120px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            top: 70%;
+            right: 18%;
+            transform: rotate(-30deg);
+            animation-duration: 55s;
+        }
+
+        @keyframes float {
+            0% { transform: translate3d(0,0,0) translateZ(0) rotate(0deg); }
+            50% { transform: translate3d(0,-15px,0) translateZ(0) rotate(3deg); }
+            100% { transform: translate3d(0,0,0) translateZ(0) rotate(0deg); }
+        }
+
+        /* subtle lighting glow behind cards */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 25% 50%, rgba(255,136,0,0.15), transparent 60%);
+            pointer-events: none;
+            filter: blur(120px);
+            mix-blend-mode: overlay;
+            animation: pulseLight 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulseLight {
+            0%,100% { opacity: 0.4; }
+            50% { opacity: 0.6; }
+        }
+
+        /* parallax disabled on narrow screens */
+        @media(max-width:600px) {
+            .decor-container { display: none; }
+            .container::before { display: none; }
+            .container {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .theme-toggle-wrapper {
+                top: 10px;
+                right: 10px;
+            }
+
+            .theme-toggle {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .toggle-switch {
+                width: 44px;
+                height: 24px;
+            }
+
+            .toggle-circle {
+                width: 20px;
+                height: 20px;
+            }
+
+            html[data-theme="dark"] .toggle-circle {
+                transform: translateX(20px);
+            }
+        }
+        
+        @media(max-width:768px) {
+            html, body {
+                font-size: 16px;
+                flex-direction: column;
+            }
+            .container {
+                padding: 24px;
+                max-width: 100%;
+                margin: 0 12px;
+            }
+            h1 { font-size: 24px; }
+            .subtitle { font-size: 14px; }
+            .value { font-size: 16px; }
+            .button-group { gap: 8px; justify-content: center; }
+            .copy-btn, .open-btn { padding: 6px 14px; font-size: 14px; }
+            .card { margin-bottom: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- THEME TOGGLE SWITCH -->
+    <div class="theme-toggle-wrapper">
+        <div class="theme-toggle">
+            <i class="toggle-icon fas fa-sun"></i>
+            <button class="toggle-switch" id="themeToggle" aria-label="Toggle dark and light mode">
+                <div class="toggle-circle"></div>
+            </button>
+            <i class="toggle-icon fas fa-moon"></i>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="logo-box">
+            <img src="logo.png" alt="Algarash Logo">
+        </div>
+
+        <h1>Algarash Trading Co. WLL</h1>
+        <div class="subtitle">created by Ahmed Ali Asif</div>
+
+        <!-- PHONE -->
+        <div class="card">
+            <div class="icon-label">
+                <i class="fas fa-phone"></i>
+                <span>Phone</span>
+            </div>
+            <div class="value" id="phone">+97313603177</div>
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyText('phone', this)">Copy</button>
+                <a href="tel:+97313603177"><button class="open-btn">Call</button></a>
+            </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="card">
+            <div class="icon-label">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+            </div>
+            <div class="value" id="email">lpo@algarashtrading.com</div>
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyText('email', this)">Copy</button>
+                <a href="mailto:lpo@algarashtrading.com"><button class="open-btn">Open Mail</button></a>
+            </div>
+        </div>
+
+        <!-- COMPANY INSTAGRAM -->
+        <div class="card">
+            <div class="icon-label">
+                <i class="fab fa-instagram"></i>
+                <span>Company Instagram</span>
+            </div>
+            <div class="value" id="insta">@algarash_trading</div>
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyText('insta', this)">Copy</button>
+                <a href="https://instagram.com/algarash_trading" target="_blank">
+                    <button class="open-btn">Open</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- WEBSITE -->
+        <div class="card">
+            <div class="icon-label">
+                <i class="fas fa-globe"></i>
+                <span>Website</span>
+            </div>
+            <div class="value" id="website">https://algarashtradingbh.com/</div>
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyText('website', this)">Copy</button>
+                <a href="https://algarashtradingbh.com/" target="_blank">
+                    <button class="open-btn">Open</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="card">
+            <div class="icon-label">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Full Address</span>
+            </div>
+            <div class="value" id="address">
+                Store: 0023 Building: 24 Road: 0007 Block: 0603<br>
+                Mahaazza, Sitra – Kingdom of Bahrain
+            </div>
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyText('address', this)">Copy Address</button>
+            </div>
+        </div>
+
+        <footer>
+            © 2026 Algarash Trading Co. WLL
+            <div class="personal">
+                Created by Ahmed Ali Asif<br>
+                Instagram:
+                <a href="https://instagram.com/amd_arain" target="_blank" class="insta-link">
+                    @amd_arain
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- decorative 3D animated background area (fixed to viewport right side) -->
+    <div class="decor-container" aria-hidden="true">
+        <div class="shape blob1"></div>
+        <div class="shape blob2"></div>
+        <div class="shape glass1"></div>
+        <div class="shape glass2"></div>
+    </div>
+
+    <div class="toast" id="toast">Copied to Clipboard</div>
+
+    <script>
+        // DARK/LIGHT MODE TOGGLE
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // COPY TEXT FUNCTION
+        function copyText(id, btn) {
+            const text = document.getElementById(id).innerText.trim();
+            // modern clipboard API with fallback
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => {
+                    // fallback below if writeText fails
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+
+            // show tooltip near the clicked button
+            const toast = document.getElementById("toast");
+            positionToast(toast, btn);
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 1700);
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+        }
+
+        function positionToast(toast, btn) {
+            if (!btn) return;
+            requestAnimationFrame(() => {
+                const rect = btn.getBoundingClientRect();
+                toast.style.top = '0px';
+                toast.style.left = '0px';
+                const tRect = toast.getBoundingClientRect();
+                const v = window.visualViewport;
+                const offsetX = v ? v.offsetLeft : 0;
+                const offsetY = v ? v.offsetTop : 0;
+                let top = rect.top + window.scrollY + offsetY - tRect.height - 8;
+                let left = rect.left + window.scrollX + offsetX + (rect.width - tRect.width) / 2;
+                left = Math.max(8, Math.min(left, window.innerWidth - tRect.width - 8));
+                top = Math.max(8 + window.scrollY, top);
+                toast.style.top = `${top}px`;
+                toast.style.left = `${left}px`;
+            });
+        }
+
+        // PARALLAX / LIGHT MOTION
+        (function() {
+            const decor = document.querySelector('.decor-container');
+            if (!decor) return;
+            document.addEventListener('mousemove', e => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 12;
+                const y = (e.clientY / window.innerHeight - 0.5) * 12;
+                decor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
